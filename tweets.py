@@ -20,9 +20,9 @@ parser.add_argument(
     '-r',
     '--retweets',
     action='store_true',
-    help='Show retweets'
+    help='Show retweets.'
 )
-parser.add_argument('-v', '--verbose', action='store_true', help='More output')
+parser.add_argument('-v', '--verbose', action='store_true', help='More output.')
 
 args = parser.parse_args()
 
