@@ -148,7 +148,7 @@ class GetTweetsAPI():
                 )
             tweet_ids.sort(reverse=True)
             tweets = (
-                [' '.join(tweets_json[str(x)]['full_text'].splitlines()) for x in tweet_ids[:count]]
+                [tweets_json[str(x)]['full_text'] for x in tweet_ids[:count]]
             )
         except KeyError as e:
             raise FailedToGetTweetsException('Failed to get tweets')
