@@ -47,20 +47,23 @@ if args.verbose:
 render_tweets(tweets)
 
 # infinite loop checking for new tweets
-while True:
-    if args.verbose:
-        print('Sleeping for 10 minutes...')
-    time.sleep(10 * 60)
-    if args.verbose:
-        print('Checking for new tweets...')
-    try:
-        tweets = tweets_response.get_tweets(
-            new_only=True,
-            refresh_tokens=True
-        )
+try:
+    while True:
         if args.verbose:
-            gt, bearer_token, query_id = tweets_response.get_twitter_values()
-            print('Using guest token "%s" and bearer token "%s"\n' % (gt, bearer_token))
-    except FailedToGetTweetsException as e:
-        print(e)
-    render_tweets(tweets)
+            print('Sleeping for 10 minutes...')
+        time.sleep(10 * 60)
+        if args.verbose:
+            print('Checking for new tweets...')
+        try:
+            tweets = tweets_response.get_tweets(
+                new_only=True,
+                refresh_tokens=True
+            )
+            if args.verbose:
+                gt, bearer_token, query_id = tweets_response.get_twitter_values()
+                print('Using guest token "%s" and bearer token "%s"\n' % (gt, bearer_token))
+        except FailedToGetTweetsException as e:
+            print(e)
+        render_tweets(tweets)
+except (KeyboardInterrupt, SystemExit):
+    exit(0)
