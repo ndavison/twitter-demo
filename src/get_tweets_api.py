@@ -24,9 +24,6 @@ class GetTweetsAPI():
     4. Queries the Twitter API at /2/timeline/profile/X.json, where X is the
     user id.
 
-    A single GetTweetsAPI instance is designed to be used multiple times
-    in one python thread, e.g. between sleeps or event driven.
-
     Arguments:
         user (str): the username of the Twitter user to query against.
         retweets (bool): toggles whether to return retweets
