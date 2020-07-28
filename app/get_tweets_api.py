@@ -24,11 +24,13 @@ class GetTweetsAPI():
 
     Arguments:
         user (str): the username of the Twitter user to query against.
+        retweets (bool): toggles whether to return retweets
     '''
 
-    def __init__(self, user):
+    def __init__(self, user, retweets=False):
         self.user = user
-        self.gt, self.bearer_token, self.query_id = self.__get_twitter_values()
+        self.retweets = retweets
+        self.gt, self.bearer_token, self.query_id = self.get_twitter_values()
         self.s_twitter = requests.session()
         self.headers = {
             'x-guest-token': self.gt,
@@ -37,7 +39,7 @@ class GetTweetsAPI():
         }
         self.user_id = self.__get_user_id()
 
-    def __get_twitter_values(self):
+    def get_twitter_values(self):
         '''
         Collect the values needed to make an unauthenticated request to the
         Twitter API for a user's timeline, using GetTwitterValues.
@@ -137,7 +139,13 @@ class GetTweetsAPI():
             )
         try:
             tweets_json = timeline_json['globalObjects']['tweets']
-            tweet_ids = list(int(x) for x in tweets_json.keys())
+            if self.retweets:
+                tweet_ids = list(int(x) for x in tweets_json.keys())
+            else:
+                tweet_ids = list(
+                    int(x) for x in tweets_json.keys()
+                    if 'retweeted_status_id_str' not in tweets_json[x]
+                )
             tweet_ids.sort(reverse=True)
             tweets = (
                 [' '.join(tweets_json[str(x)]['full_text'].splitlines()) for x in tweet_ids[:count]]

@@ -10,10 +10,17 @@ tweets are displayed, and every 10 minutes new activity is displayed.
 
 parser = ArgumentParser(description=app_description)
 parser.add_argument(
-    "-u",
-    "--user",
-    help="The value of the Twitter username to retrieve tweets from."
+    '-u',
+    '--user',
+    help='The value of the Twitter username to retrieve tweets from.'
 )
+parser.add_argument(
+    '-r',
+    '--retweets',
+    action='store_true',
+    help='Show retweets'
+)
+parser.add_argument('-v', '--verbose', action='store_true', help='More output')
 
 args = parser.parse_args()
 
@@ -22,10 +29,18 @@ if not args.user:
     exit(1)
 
 try:
-    tweets_response = GetTweetsAPI(user=args.user)
+    tweets_response = GetTweetsAPI(
+        user=args.user,
+        retweets=args.retweets
+    )
     tweets = tweets_response.get_tweets(count=5)
-    for tweet in tweets:
-        print(tweet)
 except FailedToGetTweetsException as e:
     print(e)
     exit(1)
+
+if args.verbose:
+    gt, bearer_token, query_id = tweets_response.get_twitter_values()
+    print('Using guest token "%s" and bearer token "%s"\n' % (gt, bearer_token))
+
+for tweet in tweets:
+    print(tweet)
