@@ -137,8 +137,8 @@ class GetTweetsAPI():
             FailedToGetTweetsException: if tweets could not be retrieved.
 
         Returns:
-            tweets (list): a list of tweet text for the user, most recent
-                first, limited by the 'limit' argument.
+            tweets (list): a list of tweet timestamp and text tuples for the
+                user, most recent first, limited by the 'limit' argument.
         '''
 
         if refresh_tokens:
@@ -182,7 +182,7 @@ class GetTweetsAPI():
                 tweet_ids.sort(reverse=True)
                 tweets = (
                     list(
-                        unescape(tweets_json[str(x)]['full_text'])
+                        (tweets_json[str(x)]['created_at'], unescape(tweets_json[str(x)]['full_text']))
                         for x in tweet_ids[:count]
                     )
                 )

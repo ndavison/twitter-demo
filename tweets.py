@@ -50,7 +50,7 @@ render_tweets(tweets)
 while True:
     if args.verbose:
         print('Sleeping for 10 minutes...')
-    time.sleep(10)
+    time.sleep(10 * 60)
     if args.verbose:
         print('Checking for new tweets...')
     try:
