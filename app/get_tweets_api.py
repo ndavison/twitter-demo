@@ -11,13 +11,16 @@ class GetTweetsAPI():
     GetTweetsAPI mimmicks the process a browser uses when accessing a Twitter
     user's tweet timeline in an unauthenticated session. To do this, it:
 
-    1. Finds the "guest token" from the Twitter markup, and uses it in the
+    1. Gets the "guest token" from the Twitter markup, and uses it in the
     "x-guest-token" request header in the API call.
 
-    2. Finds the bearer token from the Twitter main.js, and uses it in the
+    2. Gets the bearer token from the Twitter main.js, and uses it in the
     "authorization" request header in the API call.
 
-    3. Finds the user id for the supplied username from a GraphQL query.
+    3. Gets the user id for the supplied username from a GraphQL query.
+
+    4. Queries the Twitter API at /2/timeline/profile/X.json, where X is the
+    user id.
 
     Arguments:
         user (str): the username of the Twitter user to query against.
