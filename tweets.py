@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from src.get_tweets_api import GetTweetsAPI
 from src.exceptions import FailedToGetTweetsException
 import requests
+import re
 
 app_description = '''
 Monitors a Twitter account for tweet activity. On execution, the 5 most recent
@@ -26,6 +27,12 @@ args = parser.parse_args()
 
 if not args.user:
     print('You must supply a user value, use -h for help.')
+    exit(1)
+
+if len(args.user) > 15 or re.search('[^a-zA-Z0-9_]+', args.user):
+    print(
+        'Invalid username - Twitter usernames must be 15 or few characters in length, and must be alphanumeric only (with underscores).'
+    )
     exit(1)
 
 try:
