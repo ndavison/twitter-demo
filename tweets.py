@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
-from app.get_tweets_api import GetTweetsAPI
-from app.exceptions import FailedToGetTweetsException
+from src.get_tweets_api import GetTweetsAPI
+from src.exceptions import FailedToGetTweetsException
 import requests
 
 app_description = '''
