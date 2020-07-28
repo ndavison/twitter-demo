@@ -138,7 +138,8 @@ class GetTweetsAPI():
 
         Returns:
             tweets (list): a list of tweet timestamp and text tuples for the
-                user, most recent first, limited by the 'limit' argument.
+                user, sorted ascending in time, limited by the 'limit'
+                argument.
         '''
 
         if refresh_tokens:
@@ -180,10 +181,12 @@ class GetTweetsAPI():
                 tweet_ids = list(set(tweet_ids) - set(self.seen_tweet_ids))
             if len(tweet_ids) > 0:
                 tweet_ids.sort(reverse=True)
+                tweet_ids_culled = tweet_ids[:count]
+                tweet_ids_culled.sort()
                 tweets = (
                     list(
                         (tweets_json[str(x)]['created_at'], unescape(tweets_json[str(x)]['full_text']))
-                        for x in tweet_ids[:count]
+                        for x in tweet_ids_culled
                     )
                 )
         except KeyError as e:
