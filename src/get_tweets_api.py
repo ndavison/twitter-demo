@@ -3,6 +3,7 @@ from src.exceptions import (
     FailedToGetTwitterValueException,
     FailedToGetTweetsException
 )
+from html import unescape
 import requests
 
 
@@ -148,7 +149,10 @@ class GetTweetsAPI():
                 )
             tweet_ids.sort(reverse=True)
             tweets = (
-                [tweets_json[str(x)]['full_text'] for x in tweet_ids[:count]]
+                list(
+                    unescape(tweets_json[str(x)]['full_text'])
+                    for x in tweet_ids[:count]
+                )
             )
         except KeyError as e:
             raise FailedToGetTweetsException('Failed to get tweets')
