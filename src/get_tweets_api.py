@@ -5,6 +5,7 @@ from src.exceptions import (
 )
 from html import unescape
 import requests
+import re
 
 
 class GetTweetsAPI():
@@ -29,6 +30,10 @@ class GetTweetsAPI():
     '''
 
     def __init__(self, user, retweets=False):
+        if len(user) > 15 or re.search('[^a-zA-Z0-9_]+', user):
+            raise FailedToGetTweetsException(
+                'Invalid username - Twitter usernames must be 15 or few characters in length, and must be alphanumeric only (with underscores).'
+            )
         self.user = user
         self.retweets = retweets
         self.gt, self.bearer_token, self.query_id = self.get_twitter_values()
