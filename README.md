@@ -10,6 +10,8 @@ pip install -r requirements.txt
 
 ## cli
 
+This monitors a Twitter account for tweet activity. On execution, the 5 most recent tweets are displayed, and every 10 minutes new activity is displayed.
+
 The cli program can be run like so:
 
 ```
