@@ -24,9 +24,16 @@ class GetTweetsAPI():
     4. Queries the Twitter API at /2/timeline/profile/X.json, where X is the
     user id.
 
+    A single GetTweetsAPI instance is designed to be used multiple times
+    in one python thread, e.g. between sleeps or event driven.
+
     Arguments:
         user (str): the username of the Twitter user to query against.
         retweets (bool): toggles whether to return retweets
+
+    Raises:
+        FailedToGetTweetsException: if the username is invalid by Twitter
+        standards.
     '''
 
     def __init__(self, user, retweets=False):
@@ -36,7 +43,7 @@ class GetTweetsAPI():
             )
         self.user = user
         self.retweets = retweets
-        self.gt, self.bearer_token, self.query_id = self.get_twitter_values()
+        self.__refresh_twitter_values()
         self.s_twitter = requests.session()
         self.headers = {
             'x-guest-token': self.gt,
@@ -44,8 +51,12 @@ class GetTweetsAPI():
             'content-type': 'application/json'
         }
         self.user_id = self.__get_user_id()
+        self.seen_tweet_ids = list()
 
-    def get_twitter_values(self):
+    def __refresh_twitter_values(self):
+        self.gt, self.bearer_token, self.query_id = self.__get_new_twitter_values()
+
+    def __get_new_twitter_values(self):
         '''
         Collect the values needed to make an unauthenticated request to the
         Twitter API for a user's timeline, using GetTwitterValues.
@@ -65,6 +76,9 @@ class GetTweetsAPI():
         except FailedToGetTwitterValueException as e:
             raise FailedToGetTweetsException(e)
         return (gt, bearer_token, query_id)
+
+    def get_twitter_values(self):
+        return (self.gt, self.bearer_token, self.query_id)
 
     def __get_user_id(self):
         '''
@@ -108,22 +122,29 @@ class GetTweetsAPI():
             )
         return user_id
 
-    def get_tweets(self, count=10):
+    def get_tweets(self, count=None, new_only=False, refresh_tokens=False):
         '''
         Queries the Twitter API using a guest token and authorization bearer
         token retrived from GetTwitterValues().
 
         Arguments:
             count (int): the amount of tweets to get.
+            new_only (bool): toggles whether to only get new tweets since the
+                last run
+            refresh_tokens (bool): get new tokens before checking for tweets.
 
         Raises:
             FailedToGetTweetsException: if tweets could not be retrieved.
 
         Returns:
-            tweets (list): a list of tweet text for the user, most recent first, limited by the 'limit' argument.
+            tweets (list): a list of tweet text for the user, most recent
+                first, limited by the 'limit' argument.
         '''
 
-        tweets = []
+        if refresh_tokens:
+            self.__refresh_twitter_values()
+
+        tweets = list()
         try:
             url = (
                 'https://api.twitter.com/2/timeline/profile/%s.json'
@@ -152,13 +173,25 @@ class GetTweetsAPI():
                     int(x) for x in tweets_json.keys()
                     if 'retweeted_status_id_str' not in tweets_json[x]
                 )
-            tweet_ids.sort(reverse=True)
-            tweets = (
-                list(
-                    unescape(tweets_json[str(x)]['full_text'])
-                    for x in tweet_ids[:count]
+            # if we only want the new tweets since the last execution,
+            # only use the new ids that are not in the already seen ids
+            # and update the seen ids
+            if new_only and len(self.seen_tweet_ids) > 0:
+                tweet_ids = list(set(tweet_ids) - set(self.seen_tweet_ids))
+            if len(tweet_ids) > 0:
+                tweet_ids.sort(reverse=True)
+                tweets = (
+                    list(
+                        unescape(tweets_json[str(x)]['full_text'])
+                        for x in tweet_ids[:count]
+                    )
                 )
-            )
         except KeyError as e:
             raise FailedToGetTweetsException('Failed to get tweets')
+        else:
+            # only record the ids as being 'seen' if no exceptions were 
+            # encountered. In this case we consider all tweets returned
+            # from the API to be seen even if they were not in the final
+            # list due to the limit cutting them off.
+            self.seen_tweet_ids += tweet_ids
         return tweets

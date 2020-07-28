@@ -1,7 +1,9 @@
 from argparse import ArgumentParser
 from src.get_tweets_api import GetTweetsAPI
 from src.exceptions import FailedToGetTweetsException
+from src.util import render_tweets
 import requests
+import time
 
 app_description = '''
 Monitors a Twitter account for tweet activity. On execution, the 5 most recent
@@ -42,7 +44,23 @@ if args.verbose:
     gt, bearer_token, query_id = tweets_response.get_twitter_values()
     print('Using guest token "%s" and bearer token "%s"\n' % (gt, bearer_token))
 
-for tweet in tweets:
-    # remove newlines in each tweet, so newlines differentiate between tweets
-    # in the output
-    print(' '.join(tweet.splitlines()))
+render_tweets(tweets)
+
+# infinite loop checking for new tweets
+while True:
+    if args.verbose:
+        print('Sleeping for 10 minutes...')
+    time.sleep(10)
+    if args.verbose:
+        print('Checking for new tweets...')
+    try:
+        tweets = tweets_response.get_tweets(
+            new_only=True,
+            refresh_tokens=True
+        )
+        if args.verbose:
+            gt, bearer_token, query_id = tweets_response.get_twitter_values()
+            print('Using guest token "%s" and bearer token "%s"\n' % (gt, bearer_token))
+    except FailedToGetTweetsException as e:
+        print(e)
+    render_tweets(tweets)
