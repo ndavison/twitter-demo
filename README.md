@@ -1,6 +1,6 @@
 # Twitter demo
 
-This python app monitors a Twitter account for tweet activity, using the asyncio library to . On execution, the 5 most recent tweets are displayed, and every 10 minutes new tweet activity is displayed. The app also includes an inbuilt HTTP API to retrieve all displayed tweets so far.
+This python app monitors a Twitter account for tweet activity, using the asyncio library to create an event loop for the life of the running app. On execution, the 5 most recent tweets are displayed, and every 10 minutes new tweet activity is displayed. The app also includes an inbuilt HTTP API to retrieve all displayed tweets so far.
 
 ## setup
 
