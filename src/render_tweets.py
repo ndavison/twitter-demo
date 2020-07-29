@@ -1,6 +1,7 @@
 from colored import fg, attr
 from src.exceptions import FailedToGetTweetsException
 import asyncio
+import sys
 
 
 class RenderTweets:
@@ -47,10 +48,11 @@ class RenderTweets:
         for tweet in tweets:
             # remove newlines in each tweet, so newlines differentiate between
             # tweets in the output
-            print(
-                '[%s %s %s] ' % (fg(111), tweet[0], attr(0)),
-                ' '.join(tweet[1].splitlines())
+            sys.stdout.write(
+                '[%s %s %s] %s\n'
+                % (fg(111), tweet[0], attr(0), ' '.join(tweet[1].splitlines()))
             )
+            sys.stdout.flush()
 
     async def render_5_most_recent_tweets(self, tweets, tweets_response):
         '''
