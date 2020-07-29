@@ -195,6 +195,9 @@ class GetTweetsAPI:
             if last_id:
                 tweet_ids = list(x for x in tweet_ids if x > last_id)
             if len(tweet_ids) > 0:
+                # an assumption here is the display should be oldest to newest,
+                # i.e. opposite to Twitter's UI, as it makes more sense in a
+                # cli environment.
                 tweet_ids.sort(reverse=True)
                 tweet_ids_culled = tweet_ids[:count]
                 tweet_ids_culled.sort()

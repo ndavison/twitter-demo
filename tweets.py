@@ -16,12 +16,20 @@ parser.add_argument(
     '--user',
     help='The value of the Twitter username to retrieve tweets from.'
 )
+# it's unclear whether retweets should be returned from the requirements given,
+# so the -r argument allows you to enable RT's (off by default).
 parser.add_argument(
     '-r',
     '--retweets',
     action='store_true',
     help='Show retweets.'
 )
+# the 'simple curl command' friendly API requirement is enabled by this
+# argument, which establishes an aiohttp server when enabled (off by
+# default). The requirements didn't specify HTTP, and curl has access
+# to a lot of protocols in most its standard OS compilations such as
+# file:// or a unix socket like the Docker daemon API, but HTTP was chosen
+# for its 'most obvious choice' properties.
 parser.add_argument(
     '-w',
     '--web-server',
