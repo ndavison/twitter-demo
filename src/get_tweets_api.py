@@ -36,7 +36,9 @@ class GetTweetsAPI:
     def __init__(self, user, retweets=False):
         if len(user) > 15 or re.search('[^a-zA-Z0-9_]+', user):
             raise FailedToGetTweetsException(
-                'Invalid username - Twitter usernames must be 15 or few characters in length, and must be alphanumeric only (with underscores).'
+                ('Invalid username - Twitter usernames must be 15 or few \
+                  characters in length, and must be alphanumeric only \
+                  (with underscores).')
             )
         self.user = user
         self.retweets = retweets
@@ -50,7 +52,11 @@ class GetTweetsAPI:
         self.user_id = self.__get_user_id()
 
     def __refresh_twitter_values(self):
-        self.gt, self.bearer_token, self.query_id = self.__get_new_twitter_values()
+        (
+            self.gt,
+            self.bearer_token,
+            self.query_id
+        ) = self.__get_new_twitter_values()
 
     def __get_new_twitter_values(self):
         '''
@@ -121,7 +127,8 @@ class GetTweetsAPI:
             user_id = graph_ql_json['data']['user']['rest_id']
         except KeyError:
             raise FailedToGetTweetsException(
-                'Failed to get the user id, could not find user rest_id in GraphQL response'
+                ('Failed to get the user id, could not find user rest_id in \
+                  GraphQL response')
             )
         return user_id
 
@@ -201,6 +208,6 @@ class GetTweetsAPI:
                         for x in tweet_ids_culled
                     )
                 )
-        except KeyError as e:
+        except KeyError:
             raise FailedToGetTweetsException('Failed to get tweets')
         return tweets

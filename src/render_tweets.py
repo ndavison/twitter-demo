@@ -19,7 +19,7 @@ class RenderTweets:
             count (int): the amount of tweets to return.
             refresh_tokens (bool): get new tokens before checking for tweets.
             last_id (int): the id of the latest seen tweet.
-        
+
         Return:
             tweets_api (list): the tweets retrieved from GetTweetsAPI().
         '''

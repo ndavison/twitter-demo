@@ -23,23 +23,24 @@ class GetTwitterValues:
         using in its markup.
 
         Raises:
-            FailedToGetMainJsException: if the main.XXXX.js file can't be retrived.
-        
+            FailedToGetMainJsException: if the main.XXXX.js file can't be
+            retrived.
+
         Return:
-            main_js_content (str): the contents of the main.XXXX.js file.
+            r.text (str): the contents of the main.XXXX.js file.
         '''
         main_js_href = ''
-        main_js_content = ''
         try:
             r = requests.get('https://twitter.com')
         except Exception as e:
             raise FailedToGetMainJsException(
-                'Failed to find the main.XXXX.js file, request excepted with: %s'
+                ('Failed to find the main.XXXX.js file, request excepted \
+                  with: %s')
                 % (str(e))
             )
         soup = BeautifulSoup(r.text, 'html.parser')
         for script in soup.find_all(
-            href=re.compile('responsive-web\/web_legacy\/main\.[^\.]+\.js$')
+            href=re.compile(r'responsive-web/web_legacy/main\.[^\.]+\.js$')
         ):
             main_js_href = script['href']
         if not main_js_href or not main_js_href.startswith('https://'):
@@ -48,10 +49,10 @@ class GetTwitterValues:
             )
         try:
             r = requests.get(main_js_href)
-            main_js_content = r.text
         except Exception as e:
             raise FailedToGetMainJsException(
-                'Failed to get the main.XXXX.js contents, request excepted with: %s'
+                ('Failed to get the main.XXXX.js contents, request excepted \
+                  with: %s')
                 % (str(e))
             )
         return r.text
@@ -71,14 +72,16 @@ class GetTwitterValues:
 
         query_id = ''
         query_id_pattern = re.compile(
-            '.*queryId:"([^"]+)",operationName:"UserByScreenName",operationType:"query".*'
+            ('.*queryId:"([^"]+)",operationName:"UserByScreenName",\
+              operationType:"query".*')
         )
         matches = re.match(query_id_pattern, self.main_js)
         if matches:
             query_id = matches.group(1)
         if not query_id:
             raise FailedToGetTwitterValueException(
-                'Failed to get the user GraphQL query id from the Twitter markup'
+                ('Failed to get the user GraphQL query id from the Twitter \
+                  markup')
             )
         return query_id
 

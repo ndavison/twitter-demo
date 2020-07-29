@@ -25,7 +25,7 @@ class HTTPServer:
 
         Arguments:
             tweets (list): the list of tweets to return.
-        
+
         Returns:
             runner: the app runner for asyncio.
         '''
