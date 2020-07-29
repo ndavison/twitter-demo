@@ -24,7 +24,7 @@ See `-h` for more options.
 
 ## HTTP
 
-By passing in a `-w` argument, a simple HTTP server will run, allowing you to query the tweets collected so far as in a JSON array.
+By passing in a `-w` argument, a simple HTTP server will run, allowing you to query the tweets collected so far, which is returned in a `application/json` response as a JSON object.
 
 ```
 python tweets.py -u TWITTER_USERNAME -w
