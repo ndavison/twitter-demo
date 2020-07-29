@@ -34,8 +34,8 @@ class GetTwitterValues:
             r = requests.get('https://twitter.com')
         except Exception as e:
             raise FailedToGetMainJsException(
-                ('Failed to find the main.XXXX.js file, request excepted \
-                  with: %s')
+                'Failed to find the main.XXXX.js file, request excepted '
+                'with: %s'
                 % (str(e))
             )
         soup = BeautifulSoup(r.text, 'html.parser')
@@ -51,8 +51,8 @@ class GetTwitterValues:
             r = requests.get(main_js_href)
         except Exception as e:
             raise FailedToGetMainJsException(
-                ('Failed to get the main.XXXX.js contents, request excepted \
-                  with: %s')
+                'Failed to get the main.XXXX.js contents, request excepted '
+                'with: %s'
                 % (str(e))
             )
         return r.text
@@ -72,16 +72,16 @@ class GetTwitterValues:
 
         query_id = ''
         query_id_pattern = re.compile(
-            ('.*queryId:"([^"]+)",operationName:"UserByScreenName",\
-              operationType:"query".*')
+            '.*queryId:"([^"]+)",operationName:"UserByScreenName",'
+            'operationType:"query".*'
         )
         matches = re.match(query_id_pattern, self.main_js)
         if matches:
             query_id = matches.group(1)
         if not query_id:
             raise FailedToGetTwitterValueException(
-                ('Failed to get the user GraphQL query id from the Twitter \
-                  markup')
+                'Failed to get the user GraphQL query id from the Twitter '
+                'markup.'
             )
         return query_id
 
@@ -106,7 +106,7 @@ class GetTwitterValues:
             bearer_token = matches.group(1)
         if not bearer_token:
             raise FailedToGetTwitterValueException(
-                'Failed to get the bearer token from the Twitter markup'
+                'Failed to get the bearer token from the Twitter markup.'
             )
         return bearer_token
 
@@ -139,6 +139,6 @@ class GetTwitterValues:
                     gt = matches.groups(1)[0]
         if not gt:
             raise FailedToGetTwitterValueException(
-                'Failed to find the guest token in Twitter markup'
+                'Failed to find the guest token in Twitter markup.'
             )
         return gt

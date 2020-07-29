@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from src.get_tweets_api import GetTweetsAPI
 from src.render_tweets import RenderTweets
 from src.http_server import HTTPServer
+from src.exceptions import FailedToGetTweetsException
 import asyncio
 
 app_description = '''
@@ -51,10 +52,14 @@ loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
 
 tweets = list()
-tweets_response = GetTweetsAPI(
-    user=args.user,
-    retweets=args.retweets
-)
+try:
+    tweets_response = GetTweetsAPI(
+        user=args.user,
+        retweets=args.retweets
+    )
+except FailedToGetTweetsException as e:
+    print(e)
+    exit(1)
 renderer = RenderTweets()
 
 # if the HTTP API is enabled, start an async web server
