@@ -1,13 +1,8 @@
 from argparse import ArgumentParser
 from src.get_tweets_api import GetTweetsAPI
-from src.exceptions import FailedToGetTweetsException
-from src.util import render_tweets
-from aiohttp import web
-import json
-import requests
-import time
+from src.render_tweets import RenderTweets
+from src.http_server import HTTPServer
 import asyncio
-import threading
 
 app_description = '''
 Monitors a Twitter account for tweet activity. On execution, the 5 most recent
@@ -32,7 +27,18 @@ parser.add_argument(
     action='store_true',
     help='Run a simple HTTP server to get the tweets collected so far.'
 )
-parser.add_argument('-v', '--verbose', action='store_true', help='More output.')
+parser.add_argument(
+    '-i',
+    '--interface',
+    default='0.0.0.0',
+    help='The interface to run the HTTP server on. Defaults to 0.0.0.0.'
+)
+parser.add_argument(
+    '-p',
+    '--port',
+    default=9000,
+    help='The port to run the HTTP server on. Defaults to 9000.'
+)
 
 args = parser.parse_args()
 
@@ -40,72 +46,35 @@ if not args.user:
     print('You must supply a user value, use -h for help.')
     exit(1)
 
-def get_tweets(count=None, new_only=False, refresh_tokens=False):
-    tweets_api = list()
-    try:
-        tweets_api = tweets_response.get_tweets(
-            count=count,
-            new_only=new_only,
-            refresh_tokens=refresh_tokens
-        )
-        if args.verbose:
-            gt, bearer_token, query_id = tweets_response.get_twitter_values()
-            print('Using guest token "%s" and bearer token "%s"\n' % (gt, bearer_token))
-    except FailedToGetTweetsException as e:
-        print(e)
-        exit(1)
-    return tweets_api
-
-async def render_5_most_recent_tweets(tweets):
-    tweets += get_tweets(count=5)
-    render_tweets(tweets)
-
-async def render_new_tweets_every_10_minutes(tweets):
-    while True:
-        await asyncio.sleep(10 * 60)
-        if args.verbose:
-            print('Checking for new tweets...')
-        new_tweets = get_tweets(count=None, new_only=True, refresh_tokens=True)
-        render_tweets(new_tweets)
-        if new_tweets:
-            tweets += new_tweets
-
-def http_server():
-    async def http_tweets(request):
-        tweets_json = list({'created_at': x[0], 'full_text': x[1]} for x in tweets)
-        return web.Response(
-            body=json.dumps(tweets_json),
-            headers={
-                'content-type': 'application/json'
-            }
-        )
-    app = web.Application()
-    app.router.add_get('/tweets', http_tweets)
-    runner = web.AppRunner(app)
-    return runner
-
 # the asyncio event loop
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
-
-# if the HTTP API is enabled, start an async web server
-if args.web_server:
-    runner = http_server()
-    loop.run_until_complete(runner.setup())
-    server = web.TCPSite(runner, 'localhost', 9000)
-    loop.run_until_complete(server.start())
 
 tweets = list()
 tweets_response = GetTweetsAPI(
     user=args.user,
     retweets=args.retweets
 )
+renderer = RenderTweets()
 
-task = loop.create_task(render_5_most_recent_tweets(tweets))
+# if the HTTP API is enabled, start an async web server
+if args.web_server:
+    http_server = HTTPServer()
+    http_server.start_server(loop, args.interface, args.port, tweets)
+
+task = loop.create_task(
+    renderer.render_5_most_recent_tweets(tweets, tweets_response)
+)
 loop.run_until_complete(task)
-task = loop.create_task(render_new_tweets_every_10_minutes(tweets))
+task = loop.create_task(
+    renderer.render_new_tweets_every_10_minutes(
+        tweets,
+        tweets_response
+    )
+)
 
 try:
     loop.run_forever()
 except (KeyboardInterrupt, SystemExit):
+    loop.close()
     exit(0)

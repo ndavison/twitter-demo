@@ -7,7 +7,7 @@ import re
 import requests
 
 
-class GetTwitterValues():
+class GetTwitterValues:
     '''
     GetTwitterValues handles retrieving values from the Twitter markup that
     the frontend uses to query the Twitter API without authentication, such
