@@ -1,4 +1,5 @@
-from distutils.core import setup
+#!/usr/bin/python3
+from setuptools import setup
 setup(
     name='twittertail',
     packages=['twittertail'],
@@ -16,5 +17,12 @@ setup(
         'asyncio',
         'aiohttp',
         'colored',
+    ],
+    classifiers=[
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
 )
