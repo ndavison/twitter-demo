@@ -18,6 +18,11 @@ setup(
         'aiohttp',
         'colored',
     ],
+    entry_points={
+        'console_scripts': [
+            'twittertail=twittertail:main',
+        ],
+    },
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',

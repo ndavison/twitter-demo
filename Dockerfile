@@ -15,4 +15,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 9000
 
-ENTRYPOINT ["python", "-u", "./tweets.py", "-w", "-u"]
+ENTRYPOINT ["python", "-u", "twittertail", "-w", "-u"]
