@@ -20,7 +20,7 @@ twittertail -u TWITTER_USERNAME
 
 See `-h` for more options.
 
-[![asciicast](https://asciinema.org/a/XSoCw81l7iErqygL0NVBatdgQ.png)](https://asciinema.org/a/XSoCw81l7iErqygL0NVBatdgQ)
+[![asciicast](https://asciinema.org/a/UjCBfdewy87qeGSvejNlPnPeX.png)](https://asciinema.org/a/UjCBfdewy87qeGSvejNlPnPeX)
 
 ## HTTP
 
