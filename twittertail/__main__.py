@@ -1,3 +1,3 @@
-from .twitterfail import main
+from .twittertail import main
 if __name__ == "__main__":
     main()
