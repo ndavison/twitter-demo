@@ -1,11 +1,19 @@
 #!/usr/bin/python3
 from setuptools import setup
+
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
 setup(
     name='twittertail',
     packages=['twittertail'],
     version='0.4',
     license='MIT',
     description='Tail a twitter account from the command line.',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     author='Nathan Davison',
     author_email='ndavison85@gmail.com',
     url='https://github.com/ndavison/twittertail',
