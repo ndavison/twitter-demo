@@ -4,7 +4,7 @@ This python app monitors a Twitter account for tweet activity, using the asyncio
 
 ## setup
 
-This demo requires Python 3 (tested on Python 3.7.5+). To install the dependencies:
+This demo requires Python 3 (tested on Python 3.7.5+). To install:
 
 ```
 pip install twittertail
