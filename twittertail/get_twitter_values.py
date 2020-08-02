@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from src.exceptions import (
+from twittertail.exceptions import (
     FailedToGetMainJsException,
     FailedToGetTwitterValueException
 )

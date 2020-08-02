@@ -1,5 +1,5 @@
 from colored import fg, attr
-from src.exceptions import FailedToGetTweetsException
+from twittertail.exceptions import FailedToGetTweetsException
 import asyncio
 import sys
 

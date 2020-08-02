@@ -1,5 +1,5 @@
-from src.get_twitter_values import GetTwitterValues
-from src.exceptions import (
+from twittertail.get_twitter_values import GetTwitterValues
+from twittertail.exceptions import (
     FailedToGetTwitterValueException,
     FailedToGetTweetsException
 )
