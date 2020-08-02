@@ -20,7 +20,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'twittertail=twittertail:main',
+            'twittertail=twittertail.__main__:main',
         ],
     },
     classifiers=[
