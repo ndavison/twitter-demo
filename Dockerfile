@@ -1,7 +1,5 @@
 FROM python:alpine
 
-COPY . /app
-
 WORKDIR /app
 
 RUN apk update && apk upgrade
@@ -11,8 +9,8 @@ RUN apk add --no-cache bash \
                        libc-dev \
     && rm -rf /var/cache/apk/*
 
-RUN pip install -r requirements.txt
+RUN pip install twittertail
 
 EXPOSE 9000
 
-ENTRYPOINT ["python", "-u", "twittertail", "-w", "-u"]
+ENTRYPOINT ["twittertail", "-w", "-u"]
