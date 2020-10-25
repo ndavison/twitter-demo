@@ -40,7 +40,7 @@ class GetTwitterValues:
             )
         soup = BeautifulSoup(r.text, 'html.parser')
         for script in soup.find_all(
-            href=re.compile(r'responsive-web/web_legacy/main\.[^\.]+\.js$')
+            href=re.compile(r'responsive-web/[^\/]+/main\.[^\.]+\.js$')
         ):
             main_js_href = script['href']
         if not main_js_href or not main_js_href.startswith('https://'):
@@ -100,7 +100,7 @@ class GetTwitterValues:
 
         bearer_token = ''
         # we assume this pattern will apply to all future tokens.
-        token_pattern = re.compile('.*s="(AAAA[^"]+).*')
+        token_pattern = re.compile('.*="(AAAA[^"]+).*')
         matches = re.match(token_pattern, self.main_js)
         if matches:
             bearer_token = matches.group(1)
