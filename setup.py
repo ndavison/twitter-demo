@@ -9,7 +9,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 setup(
     name='twittertail',
     packages=['twittertail'],
-    version='0.7',
+    version='0.8',
     license='MIT',
     description='Tail a twitter account from the command line.',
     long_description=long_description,
@@ -17,7 +17,7 @@ setup(
     author='Nathan Davison',
     author_email='ndavison85@gmail.com',
     url='https://github.com/ndavison/twittertail',
-    download_url='https://github.com/ndavison/twittertail/archive/v07.tar.gz',
+    download_url='https://github.com/ndavison/twittertail/archive/v08.tar.gz',
     keywords=['twitter', 'tweets', 'cli'],
     install_requires=[
         'requests',
